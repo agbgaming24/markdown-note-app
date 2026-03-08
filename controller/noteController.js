@@ -1,6 +1,7 @@
 import pool from '../model/db.js'
 import { marked} from 'marked'
 import WriteGood from 'write-good'
+import fs from 'fs'
 
 export const checkGrammar=(req,res)=>{
     try{
@@ -69,4 +70,18 @@ export const renderNote=async(req,res)=>{
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
+}
+
+export const uploadNote = async (req, res) => {
+  try {
+    const content = fs.readFileSync(req.file.path, 'utf-8')
+    const title = req.file.originalname.replace('.md', '')
+
+    const issues = WriteGood(content)
+    const html = marked(content)
+
+    res.status(200).json({ title, content, html, issues })
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
 }
