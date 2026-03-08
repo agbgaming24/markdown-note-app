@@ -52,6 +52,35 @@ A RESTful API for creating and managing notes written in Markdown. Supports gram
 | GET | /notes | List all saved notes |
 | GET | /notes/:id/render | Render note as HTML |
 
+## File Upload
+
+The API also supports uploading `.md` files directly instead of sending markdown as JSON.
+
+### Upload a Markdown File
+POST /notes/upload
+Content-Type: multipart/form-data
+
+Body → form-data
+Key: file (type: File)
+Value: select your .md file
+
+Response:
+{
+  "title": "mynote",
+  "content": "# Hello World\nThis is my note.",
+  "html": "<h1>Hello World</h1><p>This is my note.</p>",
+  "issues": [
+    {
+      "index": 8,
+      "offset": 4,
+      "reason": "\"very\" is a weasel word and can weaken meaning"
+    }
+  ]
+}
+
+Uploaded files are stored in the `uploads/` folder on the server.
+Only `.md` files are accepted — any other file type will return a 400 error.
+
 ## Request & Response Examples
 
 ### Check Grammar
