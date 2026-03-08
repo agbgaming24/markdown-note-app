@@ -75,18 +75,12 @@ export const renderNote=async(req,res)=>{
 export const uploadNote = async (req, res) => {
 
   try {
-
-    const content = fs.readFileSync(req.file.path, 'utf-8')
-
+    const content = req.file.buffer.toString('utf-8')
     const title = req.file.originalname.replace('.md', '')
-
-
 
     const issues = WriteGood(content)
 
     const html = marked(content)
-
-
 
     res.status(200).json({ title, content, html, issues })
 
