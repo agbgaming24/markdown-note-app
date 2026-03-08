@@ -1,6 +1,6 @@
 import express from 'express'
 import * as noteController from "../controller/noteController.js"
-import { upload } from '../middleware/upload.js'
+import { upload } from '../middleware/uploads.js'
 
 
 const router=express.Router();
