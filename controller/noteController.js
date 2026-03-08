@@ -2,14 +2,14 @@ import pool from '../model/db.js'
 import { marked} from 'marked'
 import WriteGood from 'write-good'
 
-export const checkGrammer=(req,res)=>{
+export const checkGrammar=(req,res)=>{
     try{
         const{content}=req.body;
         if(!content){
-            return res.status(404).json({message:"No content found"})
+            return res.status(400).json({message:"No content found"})
         }
-        const issues=WriteGood(content);
-        res.status(200).json({ issues })
+        const suggestions=WriteGood(content);
+        res.status(200).json({ suggestions })
     }catch(err){
         return res.status(500).json({message:err.message})
     }
@@ -46,9 +46,14 @@ export const getNote=async(req,res)=>{
 
 export const renderNote=async(req,res)=>{
     try {
+        const id = parseInt(req.params.id)
+
+        if (isNaN(id) || id <= 0) {
+        return res.status(400).json({ message: "Invalid note id" })
+        }
         const [rows] = await pool.execute(
         'SELECT * FROM notes WHERE id = ?',
-        [req.params.id]
+        [id]
         )
 
         if (rows.length === 0)
