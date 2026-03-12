@@ -1,7 +1,6 @@
 import pool from '../model/db.js'
 import { marked} from 'marked'
 import WriteGood from 'write-good'
-import fs from 'fs'
 
 export const checkGrammar=(req,res)=>{
     try{
@@ -85,7 +84,6 @@ export const uploadNote = async (req, res) => {
     res.status(200).json({ title, content, html, issues })
 
   } catch (err) {
-
     res.status(500).json({ message: err.message })
 
   }
