@@ -1,23 +1,27 @@
-import Redis from "ioredis";
+import Redis from 'ioredis'
 
-const redis=new Redis({
-    host:process.env.REDIS_HOST,
-    port:process.env.REDIS_PORT
-});
+const redis = new Redis(process.env.REDIS_URL)
 
-export const limit=async (req,res,next)=>{
-    const limit=process.env.RATE_LIMIT_MAX;
-    const window=process.env.RATE_LIMIT_WINDOW;
+redis.on('error', (err) => console.log('Redis error:', err.message))
 
-    const key=req.ip;
+export const limit = async (req, res, next) => {
+  try {
+    const max = parseInt(process.env.RATE_LIMIT_MAX)
+    const window = parseInt(process.env.RATE_LIMIT_WINDOW)
+    const key = req.ip
 
-    const current=await redis.incr(key);
+    const current = await redis.incr(key)
 
-    if(current===1){
-        await redis.expire(key,window);
+    if (current === 1) {
+      await redis.expire(key, window)
     }
-    if(current>limit){
-        return res.status(429).json({message:'Too many requests'})
+
+    if (current > max) {
+      return res.status(429).json({ message: 'Too many requests' })
     }
-    next();
+
+    next()
+  } catch (err) {
+    next()
+  }
 }
