@@ -9,7 +9,7 @@ export const checkGrammar=(req,res)=>{
             return res.status(400).json({message:"No content found"})
         }
         const suggestions=WriteGood(content);
-        res.status(200).json({ suggestions })
+        res.status(200).json({ issues })
     }catch(err){
         return res.status(500).json({message:err.message})
     }
